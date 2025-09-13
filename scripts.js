@@ -26,7 +26,12 @@ function getDate(){
     let currentSeconds = moment().format("ss");
     console.log(`${currentDate} ${currentTime}, де ${currentYear} - рік, ${currentDayOfCalendar} - число календаря, ${currentMonth} - місяць, ${currentHours} - година, ${currentMinutes} - хвилини, ${currentSeconds} - секунди`);
 }
+function getDayOfWeek(){
+    let currentDayOfWeek = moment().format("LLLLL").split(" ")[0].split(",")[0]
+    console.log(currentDayOfWeek)
+}
 // getCurrentDay();
 // getCurrentMonth();
 // getCurrentYear();
-getDate()
+// getDate()
+getDayOfWeek()
