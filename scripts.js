@@ -1,37 +1,22 @@
 let moment = require("moment");
 
-function getCurrentDay(){
-    let currentDay = moment().format("dddd");
-    console.log(currentDay);
-    return currentDay;
+function getCurrentTime(){
+    let currentTime = moment().format("LTS");
+    console.log(currentTime);
+    return currentTime;
 }
-function getCurrentMonth(){
-    let currentMonth = moment().format("MMMM");
-    console.log(currentMonth);
-    return currentMonth;
-}
-function getCurrentYear(){
-    let currentYear = moment().format("YYYY");
-    console.log(currentYear);
-    return currentYear;
-}
-function getDate(){
-    let currentDate = moment().format("YYYY/MM/DD");
-    let currentTime = moment().format("HH:mm:ss");
-    let currentYear = getCurrentYear();
-    let currentDayOfCalendar = moment().format('DD');
-    let currentMonth = moment().format('MM');
-    let currentHours = moment().format("HH");
-    let currentMinutes = moment().format("mm");
-    let currentSeconds = moment().format("ss");
-    console.log(`${currentDate} ${currentTime}, де ${currentYear} - рік, ${currentDayOfCalendar} - число календаря, ${currentMonth} - місяць, ${currentHours} - година, ${currentMinutes} - хвилини, ${currentSeconds} - секунди`);
-}
-function getDayOfWeek(){
-    let currentDayOfWeek = moment().format("LLLLL").split(" ")[0].split(",")[0]
-    console.log(currentDayOfWeek)
-}
-// getCurrentDay();
-// getCurrentMonth();
-// getCurrentYear();
-// getDate()
-getDayOfWeek()
+
+const express = require("express");
+
+const HOST = "127.0.0.1";
+const PORT = "8000";
+
+const app = express();
+
+app.get("/timestamp", (req, res) => {
+    let time = getCurrentTime();
+    res.status(200).json({"currentTime": time});
+})
+app.listen(PORT, HOST, () => {
+    console.log(`http://${HOST}:${PORT}/timestamp`);
+})
