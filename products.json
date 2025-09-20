@@ -1,0 +1,16 @@
+[
+    {
+        "id": 0,
+        "title": "MacBook",
+        "description": "Laptop for programming",
+        "image": "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcTxok-lx2FTCSJDZgmHvZkylIrDq28GaJ3jDbDegpxE-RKacOOiu-P52SgJGxlO3TBwowlM87fc2l3DQuDBfTgdo_V3wOeTbET9D-NgH4mMbulS_WW-Qso3YCp_rVnJuvVSZIO3kt9I1w&usqp=CAc",
+        "productCount": 123
+    },
+    {
+        "id": 1,
+        "title": "MacBook Pro",
+        "description": "Laptop for programming",
+        "image": "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcRbxyRmuA63zH00wsWqXCuIT7utnd_BvD81eoc_1HGj5vj0Ou2FTOJrcinViIfTu9eFkYFAQDhsCU1-438YAB7x_Q98Vo1Q1fXhzs2MPKXrPO_eQJEmMh4oNacvsbt7caGEaIpNSyZy&usqp=CAc",
+        "productCount": 246
+    }
+]
