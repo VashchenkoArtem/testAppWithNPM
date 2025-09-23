@@ -24,19 +24,24 @@ const posts = JSON.parse(fs.readFileSync(postsJson, "utf-8"));
 app.get("/posts", (req, res) => {
     const skip = Number(req.query.skip);
     const take = Number(req.query.take);
-    const filter = Boolean(req.query.filter);
-    let slicedPosts = [ ...posts];
+    const filter = req.query.filter;
+    let slicedPosts = [ ...posts ];
     if (skip && take){
-        if (isNaN(filter)){
-            res.status(400).json("Choose a current variant of filter!");
+        if (filter === "true" || filter === "false"){
+            const countOfPosts = skip + take;
+            slicedPosts = slicedPosts.slice(skip, countOfPosts);
+            let filteredPosts = slicedPosts
+            if (filter === "true"){
+                filteredPosts = slicedPosts.filter((element) => {   
+                    return element.title.includes("a");
+                })
+                res.status(200).json(filteredPosts);
+                return;
+            }
+            res.status(200).json(filteredPosts);
             return;
         }
-        const countOfPosts = skip + take;
-        slicedPosts = slicedPosts.slice(skip, countOfPosts);
-        let filteredPosts = slicedPosts.filter((element) => {   
-            return element.title.includes("a");
-        })
-        res.status(200).json(filteredPosts);
+        res.status(400).json("Choose a current variant of filter!");
         return;
     }
     res.status(400).json("Please, enter a correct number in parameters");
