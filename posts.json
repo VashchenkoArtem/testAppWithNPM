@@ -1,0 +1,29 @@
+[
+    {
+        "id": 0,
+        "title": "First post",
+        "author": "Artem",
+        "description": "My first post"
+    },
+        {
+        "id": 1,
+        "title": "Second post",
+        "author": "Artem",
+        "description": "My second post"
+    },    {
+        "id": 2,
+        "title": "Third post",
+        "author": "Artem",
+        "description": "My third post"
+    },    {
+        "id": 3,
+        "title": "Fourth post aaaa",
+        "author": "Artem",
+        "description": "My fourth post aaa"
+    },    {
+        "id": 4,
+        "title": "Fiveth post",
+        "author": "Artem",
+        "description": "My fiveth post"
+    }
+]

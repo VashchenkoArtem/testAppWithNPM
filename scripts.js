@@ -9,23 +9,52 @@ function getCurrentTime(){
 }
 
 const express = require("express");
-const { json } = require("stream/consumers");
-
 const HOST = "127.0.0.1";
 const PORT = "8000";
-
 const app = express();
 
-const jsonPath = path.join(__dirname, "products.json");
 app.get("/timestamp", (req, res) => {
     let time = getCurrentTime();
     res.status(200).json({"currentTime": time});
 })
+
+const postsJson = path.join(__dirname, "posts.json");
+const posts = JSON.parse(fs.readFileSync(postsJson, "utf-8"));
+
 app.get("/posts", (req, res) => {
-    const products = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
-    res.status(200).json(products);
+    const skip = Number(req.query.skip);
+    const take = Number(req.query.take);
+    const filter = Boolean(req.query.filter);
+    let slicedPosts = [ ...posts];
+    if (skip && take){
+        if (isNaN(filter)){
+            res.status(400).json("Choose a current variant of filter!");
+            return;
+        }
+        const countOfPosts = skip + take;
+        slicedPosts = slicedPosts.slice(skip, countOfPosts);
+        let filteredPosts = slicedPosts.filter((element) => {   
+            return element.title.includes("a");
+        })
+        res.status(200).json(filteredPosts);
+        return;
+    }
+    res.status(400).json("Please, enter a correct number in parameters");
 })
+app.get("/posts/:id", (req, res) => {
+    const postId = Number(req.params.id);
+    let filteredPosts = [ ...posts];
+    if (!isNaN(postId) && filteredPosts.length > postId){
+        const onePost = filteredPosts.find((element) => {
+            return element.id === postId;
+        })
+        res.status(200).json(onePost);
+        return;
+        }
+    res.status(404).json("Post doesn`t exist!");
+    })
+
 app.listen(PORT, HOST, () => {
     console.log(`Час: \nhttp://${HOST}:${PORT}/timestamp\n`);
-    console.log(`Пости: \nhttp://${HOST}:${PORT}/posts`);
+    console.log(`Пости: \nhttp://${HOST}:${PORT}/posts?skip=1&take=2`);
 })
