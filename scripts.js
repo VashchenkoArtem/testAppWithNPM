@@ -26,14 +26,22 @@ app.get("/posts", (req, res) => {
     const take = req.query.take;
     const filter = req.query.filter;
     let slicedPosts = [ ...posts ];
-    if (skip !== undefined && take !== undefined){
-        const skipNumber = Number(skip);
-        const takeNumber = Number(take);
-        if (isNaN(skipNumber) || isNaN(takeNumber)){
+    let skipNumber = 0;
+    if (skip){
+        skipNumber = Number(skip);
+        if (isNaN(skipNumber)){
             res.status(400).json("Please, enter a correct number in parameters!");
             return;
         }
-        slicedPosts = slicedPosts.slice(skipNumber, skipNumber + takeNumber);
+        slicedPosts = slicedPosts.slice(skipNumber, slicedPosts.length + 1);
+    }
+    if (take){
+        const takeNumber = Number(take);
+        if (isNaN(takeNumber)){
+            res.status(400).json("Please, enter a correct number in parameters!");
+            return;
+        }
+        slicedPosts = slicedPosts.slice(skipNumber, takeNumber + skipNumber);
     }
     console.log(filter)
     if (filter !== undefined && filter === "true"){
