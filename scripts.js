@@ -14,7 +14,7 @@ const PORT = "8000";
 const app = express();
 
 app.get("/timestamp", (req, res) => {
-    let time = getCurrentTime();
+    let time = getCurrentTime();x
     res.status(200).json({"currentTime": time});
 })
 
@@ -22,43 +22,44 @@ const postsJson = path.join(__dirname, "posts.json");
 const posts = JSON.parse(fs.readFileSync(postsJson, "utf-8"));
 
 app.get("/posts", (req, res) => {
-    const skip = Number(req.query.skip);
-    const take = Number(req.query.take);
+    const skip = req.query.skip;
+    const take = req.query.take;
     const filter = req.query.filter;
     let slicedPosts = [ ...posts ];
-    if (skip && take){
-        if (filter === "true" || filter === "false"){
-            const countOfPosts = skip + take;
-            slicedPosts = slicedPosts.slice(skip, countOfPosts);
-            let filteredPosts = slicedPosts
-            if (filter === "true"){
-                filteredPosts = slicedPosts.filter((element) => {   
-                    return element.title.includes("a");
-                })
-                res.status(200).json(filteredPosts);
-                return;
-            }
-            res.status(200).json(filteredPosts);
+    if (skip !== undefined && take !== undefined){
+        const skipNumber = Number(skip);
+        const takeNumber = Number(take);
+        if (isNaN(skipNumber) || isNaN(takeNumber)){
+            res.status(400).json("Please, enter a correct number in parameters!");
             return;
         }
-        res.status(400).json("Choose a current variant of filter!");
-        return;
+        slicedPosts = slicedPosts.slice(skipNumber, skipNumber + takeNumber);
     }
-    res.status(400).json("Please, enter a correct number in parameters");
+    console.log(filter)
+    if (filter !== undefined && filter === "true"){
+        slicedPosts = slicedPosts.filter((post) => {
+            return post.title.includes("a");
+        })
+    }
+    res.status(200).json(slicedPosts);
 })
 app.get("/posts/:id", (req, res) => {
-    const postId = Number(req.params.id);
+    const postId = req.params.id;
+    const postIdNumber = Number(postId);
     let filteredPosts = [ ...posts];
-    if (!isNaN(postId) && filteredPosts.length > postId){
-        const onePost = filteredPosts.find((element) => {
-            return element.id === postId;
-        })
-        res.status(200).json(onePost);
+    if (isNaN(postIdNumber)){
+        res.status(400).json("Please, enter a correct number in parameters!");
         return;
-        }
-    res.status(404).json("Post doesn`t exist!");
+    }
+    if (postIdNumber > filteredPosts.length || postIdNumber < 0){
+        res.status(404).json("Post with this ID is not found!");
+        return;
+    }
+    filteredPosts = filteredPosts.filter((post) => {
+        return post.id === postIdNumber;
     })
-
+    res.status(200).json(filteredPosts);
+})
 app.listen(PORT, HOST, () => {
     console.log(`Час: \nhttp://${HOST}:${PORT}/timestamp\n`);
     console.log(`Пости: \nhttp://${HOST}:${PORT}/posts?skip=1&take=2`);
