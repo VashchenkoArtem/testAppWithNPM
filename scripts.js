@@ -27,14 +27,18 @@ app.get("/posts", (req, res) => {
     const filter = req.query.filter;
     let slicedPosts = [ ...posts ];
     let skipNumber = 0;
+    // Створюємо умову, яка перевіряє чи заданий параметр skip
     if (skip){
         skipNumber = Number(skip);
+        // Перевіряємо, чи є параметр числом
         if (isNaN(skipNumber)){
+            // Якщо параметр - не число
             res.status(400).json("Please, enter a correct number in parameters!");
             return;
         }
         slicedPosts = slicedPosts.slice(skipNumber, slicedPosts.length + 1);
     }
+    // Створюємо умову, яка перевіряє чи заданий параметр take
     if (take){
         const takeNumber = Number(take);
         if (isNaN(takeNumber)){
@@ -43,7 +47,7 @@ app.get("/posts", (req, res) => {
         }
         slicedPosts = slicedPosts.slice(skipNumber, takeNumber + skipNumber);
     }
-    console.log(filter)
+    // Створюємо умову, яка перевіряє чи заданий параметр filter
     if (filter !== undefined && filter === "true"){
         slicedPosts = slicedPosts.filter((post) => {
             return post.title.includes("a");
