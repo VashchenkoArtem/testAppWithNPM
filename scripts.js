@@ -98,7 +98,11 @@ app.get("/users/:id", (req, res) => {
     if (fields){
         const fieldsArray = fields.split(",");
         const rightFieldsArray = fieldsArray.filter((field) => {
-            return field in choosedUser;
+            if (!(field in choosedUser)) {
+                res.status(400).json(`Field ${field} is not found!`);
+                return;
+            }
+            return true;
         })
         if (rightFieldsArray.length === 0){
             res.status(400).json("Please, enter correct fields in parameter!");
