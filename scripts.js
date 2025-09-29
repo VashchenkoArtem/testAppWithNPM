@@ -18,7 +18,7 @@ app.get("/timestamp", (req, res) => {
     res.status(200).json({"currentTime": time});
 })
 
-const postsJson = path.join(__dirname, "posts.json");
+const postsJson = path.join(__dirname, "jsonFiles/posts.json");
 const posts = JSON.parse(fs.readFileSync(postsJson, "utf-8"));
 
 app.get("/posts", (req, res) => {
@@ -72,7 +72,48 @@ app.get("/posts/:id", (req, res) => {
     })
     res.status(200).json(filteredPosts);
 })
+
+const pathToUsers = path.join(__dirname, "jsonFiles/users.json");
+const allUsers = JSON.parse(fs.readFileSync(pathToUsers, "utf-8"));
+
+app.get("/users", (req, res) => {
+    res.status(200).json(allUsers);
+})
+
+app.get("/users/:id", (req, res) => {
+    const userId = Number(req.params.id);
+    const fields = req.query.fields;
+    let choosedUser = [ ...allUsers ];
+    if (isNaN(userId)){
+        res.status(400).json("Please, enter a correct id in parameter!");
+        return;
+    }
+    if (userId <= 0 || userId > choosedUser.length){
+        res.status(404).json("User with this ID is not found!");
+        return;
+    }
+    choosedUser = choosedUser.find((user) => {
+        return user.id === userId;
+    })
+    if (fields){
+        const fieldsArray = fields.split(",");
+        const rightFieldsArray = fieldsArray.filter((field) => {
+            return field in choosedUser;
+        })
+        if (rightFieldsArray.length === 0){
+            res.status(400).json("Please, enter correct fields in parameter!");
+            return;
+        }
+        let filteredUserAnswer = {};
+        rightFieldsArray.forEach((field) => {
+            filteredUserAnswer[field] = choosedUser[field];
+        })
+        choosedUser = filteredUserAnswer;
+    }
+    res.status(200).json(choosedUser);
+});
 app.listen(PORT, HOST, () => {
     console.log(`Час: \nhttp://${HOST}:${PORT}/timestamp\n`);
     console.log(`Пости: \nhttp://${HOST}:${PORT}/posts?skip=1&take=2`);
+    console.log(`Користувачі: \nhttp://${HOST}:${PORT}/users`);
 })
