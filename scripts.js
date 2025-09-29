@@ -77,7 +77,18 @@ const pathToUsers = path.join(__dirname, "jsonFiles/users.json");
 const allUsers = JSON.parse(fs.readFileSync(pathToUsers, "utf-8"));
 
 app.get("/users", (req, res) => {
-    res.status(200).json(allUsers);
+    const username = req.query.name;
+    let filteredUsers = [ ...allUsers ];
+    if (username){
+        filteredUsers = filteredUsers.filter((user) => {
+            return user.name === username
+        })
+        if (filteredUsers.length === 0){
+            res.status(404).json("Users with this name are not found!");
+            return;
+        }
+    }
+    res.status(200).json(filteredUsers);
 })
 
 app.get("/users/:id", (req, res) => {
