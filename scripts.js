@@ -108,19 +108,13 @@ app.get("/users/:id", (req, res) => {
     })
     if (fields){
         const fieldsArray = fields.split(",");
-        const rightFieldsArray = fieldsArray.filter((field) => {
-            if (!(field in choosedUser)) {
-                res.status(400).json(`Field ${field} is not found!`);
-                return;
+        for (let field of fieldsArray){
+            if (!(field in choosedUser)){
+                return res.status(404).json(`Field ${field} is not found!`);
             }
-            return true;
-        })
-        if (rightFieldsArray.length === 0){
-            res.status(400).json("Please, enter correct fields in parameter!");
-            return;
         }
         let filteredUserAnswer = {};
-        rightFieldsArray.forEach((field) => {
+        fieldsArray.forEach((field) => {
             filteredUserAnswer[field] = choosedUser[field];
         })
         choosedUser = filteredUserAnswer;
