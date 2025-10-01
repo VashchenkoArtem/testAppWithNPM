@@ -57,14 +57,25 @@ app.get("/posts", (req, res) => {
     }
     res.status(200).json(slicedPosts);
 })
-app.post("/posts", (req, res) => {
-    const data = req.body;
-    if (!data.title || !data.description || !data.image){
-        res.status(422).json("Please, enter data correctly!");
-        return;
+app.post("/posts", async (req, res) => {
+    try{
+        const data = req.body;
+        if (!data.title || !data.description || !data.image){
+            res.status(422).json("Please, enter data correctly!");
+            return;
+        }
+        let postId = 0;
+        if (posts.length > 0){
+            postId = posts[posts.length - 1].id + 1;
+        }
+        const newPost = { id: postId, ...data};
+        posts.push(newPost);    
+        await fsPromises.writeFile(postsJson, [JSON.stringify(posts)]);
+        res.status(200).json(newPost);
+    }catch (error){
+        console.log("error")
+        res.status(500).json(error);
     }
-    const postId = posts[posts.length - 1].id + 1;
-    console.log(postId);
 })
 app.get("/posts/:id", (req, res) => {
     const postId = req.params.id;
