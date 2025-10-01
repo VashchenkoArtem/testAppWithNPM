@@ -1,6 +1,7 @@
 const moment = require("moment");
 const path = require("path");
 const fs = require("fs");
+const fsPromises = require("fs/promises");
 
 function getCurrentTime(){
     let currentTime = moment().format("LTS");
@@ -12,6 +13,7 @@ const express = require("express");
 const HOST = "127.0.0.1";
 const PORT = "8000";
 const app = express();
+app.use(express.json());
 
 app.get("/timestamp", (req, res) => {
     let time = getCurrentTime();x
@@ -54,6 +56,15 @@ app.get("/posts", (req, res) => {
         })
     }
     res.status(200).json(slicedPosts);
+})
+app.post("/posts", (req, res) => {
+    const data = req.body;
+    if (!data.title || !data.description || !data.image){
+        res.status(422).json("Please, enter data correctly!");
+        return;
+    }
+    const postId = posts[posts.length - 1].id + 1;
+    console.log(postId);
 })
 app.get("/posts/:id", (req, res) => {
     const postId = req.params.id;
