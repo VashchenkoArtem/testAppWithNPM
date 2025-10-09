@@ -1,23 +1,29 @@
-const moment = require("moment");
-const path = require("path");
-const fs = require("fs");
-const fsPromises = require("fs/promises");
+import path from "path"
+import fs from "fs"
+import fsPromises from "fs/promises"
 
+interface queryParams {
+    skip?: string,
+    take?: string,
+    filter?: string
+}
+interface post{
+    title: string,
+    description: string,
+    image: string
+}
 const requestService = {
-    // getTime: (req, res) => {
-    //     let currentTime = moment().format("LTS");
-    //     return currentTime;
-    // },
-    getPosts: (skip, take, filter) => {
+    getPosts: (params: queryParams) => {
         const postsJson = path.join(__dirname, "../../jsonFiles/posts.json");
         const posts = JSON.parse(fs.readFileSync(postsJson, "utf-8"));
         let slicedPosts = [ ...posts ];
         let skipNumber = 0;
+        const { skip, take, filter} = params
         // Створюємо умову, яка перевіряє чи заданий параметр skip
         if (skip){
             skipNumber = Number(skip);
             // Перевіряємо, чи є параметр числом
-            if (isNaN(skipNumber)){
+            if (Number.isNaN(skipNumber)){
                 // Якщо параметр - не число
                 return {
                     status: "incorrect number",
@@ -29,7 +35,7 @@ const requestService = {
         // Створюємо умову, яка перевіряє чи заданий параметр take
         if (take){
             const takeNumber = Number(take);
-            if (isNaN(takeNumber)){
+            if (Number.isNaN(takeNumber)){
                 return {
                     status: "incorrect number",
                     message: "Please, enter a correct number in parameters!"
@@ -48,7 +54,7 @@ const requestService = {
             data: slicedPosts
         }
     },
-    createPost: async (data) => {
+    createPost: async (data: post | post[]) => {
         const postsJson = path.join(__dirname, "../../jsonFiles/posts.json");
         const posts = JSON.parse(fs.readFileSync(postsJson, "utf-8"));
         if (!Array.isArray(data)){
@@ -77,7 +83,7 @@ const requestService = {
             data: { newPosts }
         }
     },
-    getPostById: (postId) => {
+    getPostById: (postId: number) => {
         const postsJson = path.join(__dirname, "../../jsonFiles/posts.json");
         const posts = JSON.parse(fs.readFileSync(postsJson, "utf-8"));
         const postIdNumber = Number(postId);
@@ -103,4 +109,4 @@ const requestService = {
         };
     }
 }
-module.exports=requestService;
+export default requestService

@@ -1,34 +1,22 @@
-const path = require("path");
-const fs = require("fs");
+import path from "path"
+import fs from "fs"
 
-const requestService = {
-    getUsers: (username) => {
-        
+const requestServiceUsers = {
+    getUsers: () => {
         const pathToUsers = path.join(__dirname, "../../jsonFiles/users.json");
         const allUsers = JSON.parse(fs.readFileSync(pathToUsers, "utf-8"));
 
         let filteredUsers = [ ...allUsers ];
-        if (username){
-            filteredUsers = filteredUsers.filter((user) => {
-                return user.name === username
-            })
-            if (filteredUsers.length === 0){
-                return {
-                    status: "not found",
-                    message: "Users with this name are not found!"
-                }
-            }
-        }
         return {
             status: "success",
             data: filteredUsers
         };
     },
-    getUserById: (userId, fields) => {
+    getUserById: (userId: number, fields: string) => {
         const pathToUsers = path.join(__dirname, "../../jsonFiles/users.json");
         const allUsers = JSON.parse(fs.readFileSync(pathToUsers, "utf-8"));
         let choosedUser = [ ...allUsers ];
-        if (isNaN(userId)){
+        if (Number.isNaN(userId)){
             return {
                 status: "incorrect number",
                 message: "Please, enter a correct id in parameter!"
@@ -43,7 +31,7 @@ const requestService = {
         choosedUser = choosedUser.find((user) => {
             return user.id === userId;
         })
-        if (fields){
+        if (fields !== "undefined"){
             const fieldsArray = fields.split(",");
             for (let field of fieldsArray){
                 if (!(field in choosedUser)){
@@ -53,8 +41,8 @@ const requestService = {
                     }
                 }
             }
-            let filteredUserAnswer = {};
-            fieldsArray.forEach((field) => {
+            let filteredUserAnswer: any = {};
+            fieldsArray.forEach((field: any) => {
                 filteredUserAnswer[field] = choosedUser[field];
             })
             choosedUser = filteredUserAnswer;
@@ -65,5 +53,4 @@ const requestService = {
         }
     }
 }
-
-module.exports=requestService
+export default requestServiceUsers

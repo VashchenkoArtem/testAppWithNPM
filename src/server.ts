@@ -1,20 +1,21 @@
-const moment = require("moment");
-const path = require("path");
-const fs = require("fs");
-const fsPromises = require("fs/promises");
+// const moment = require("moment");
+// const path = require("path");
+// const fs = require("fs");
+// const fsPromises = require("fs/promises");
 
-
+import postRouter from "./Post/post.router"
+import timeRouter from "./Time/time.router";
+import userRouter from "./Users/users.router"
 const express = require("express");
 const HOST = "127.0.0.1";
 const PORT = "8000";
 const app = express();
 
-const router = require("./Post/post.router");
-const timeRouter = require("./Time/time.router");
-const userRouter = require("./Users/users.router");
+// const timeRouter = require("./Time/time.router");
+// const userRouter = require("./Users/users.router");
 
 app.use(express.json());
-app.use(router);
+app.use(postRouter);
 app.use(timeRouter);
 app.use(userRouter);
 
