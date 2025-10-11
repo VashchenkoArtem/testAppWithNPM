@@ -1,24 +1,16 @@
 import path from "path"
 import fs from "fs"
 import fsPromises from "fs/promises"
+import {IQueryParams, IStatus, Post} from "./post.types"
 
-interface queryParams {
-    skip?: string,
-    take?: string,
-    filter?: string
-}
-interface post{
-    title: string,
-    description: string,
-    image: string
-}
+
 const requestService = {
-    getPosts: (params: queryParams) => {
+    getPosts: (params: IQueryParams): IStatus => {
         const postsJson = path.join(__dirname, "../../jsonFiles/posts.json");
         const posts = JSON.parse(fs.readFileSync(postsJson, "utf-8"));
-        let slicedPosts = [ ...posts ];
-        let skipNumber = 0;
-        const { skip, take, filter} = params
+        let slicedPosts: Post[] = [ ...posts ];
+        let skipNumber: number = 0;
+        const { skip, take, filter}: IQueryParams = params
         // Створюємо умову, яка перевіряє чи заданий параметр skip
         if (skip){
             skipNumber = Number(skip);
@@ -34,7 +26,7 @@ const requestService = {
         }
         // Створюємо умову, яка перевіряє чи заданий параметр take
         if (take){
-            const takeNumber = Number(take);
+            const takeNumber: number = Number(take);
             if (Number.isNaN(takeNumber)){
                 return {
                     status: "incorrect number",
@@ -54,13 +46,13 @@ const requestService = {
             data: slicedPosts
         }
     },
-    createPost: async (data: post | post[]) => {
+    createPost: async (data: Post | Post[]): Promise<IStatus> => {
         const postsJson = path.join(__dirname, "../../jsonFiles/posts.json");
         const posts = JSON.parse(fs.readFileSync(postsJson, "utf-8"));
         if (!Array.isArray(data)){
                 data = [data];
         }
-        let newPosts = [];
+        let newPosts: Post[] = [];
         for (let addedPost of data){
             if (!addedPost.title || !addedPost.description || !addedPost.image){
                 return {
@@ -68,11 +60,11 @@ const requestService = {
                     message: "Please, enter data correctly!"
                 }
             }
-            let postId = 0;
+            let postId: number = 0;
             if (posts.length > 0){  
                 postId = posts[posts.length - 1].id + 1;
             }
-            const newPost = { id: postId, ...addedPost };
+            const newPost: Post = { ...addedPost, id: postId };
             newPosts.push(newPost);
             posts.push(newPost);
             await fsPromises.writeFile(postsJson, [JSON.stringify(posts)]);
@@ -83,11 +75,11 @@ const requestService = {
             data: { newPosts }
         }
     },
-    getPostById: (postId: number) => {
+    getPostById: (postId: number): IStatus => {
         const postsJson = path.join(__dirname, "../../jsonFiles/posts.json");
         const posts = JSON.parse(fs.readFileSync(postsJson, "utf-8"));
-        const postIdNumber = Number(postId);
-        let filteredPosts = [ ...posts];
+        const postIdNumber: number = Number(postId);
+        let filteredPosts: Post[] = [ ...posts];
         if (isNaN(postIdNumber)){
             return {
                 status: "incorrect number",
@@ -107,6 +99,24 @@ const requestService = {
             status: "success",
             data: filteredPosts
         };
+    },
+    updatePostById: (postId: number , data: Post): IStatus => {  
+        const postsJson = path.join(__dirname, "../../jsonFiles/posts.json");
+        const posts = JSON.parse(fs.readFileSync(postsJson, "utf-8"));
+        if (!postId || postId >= posts.length || postId < 0){
+            return {
+                "status": "error",
+                "message": "Please, enter post id correctly!"
+            }
+        }
+        const post: Post = posts.find((elPost: Post) => {
+            return elPost.id === postId
+        })
+        const updatedData: Post = Object.assign(post, data)
+        return {
+            "status": "Success",
+            "data": updatedData
+        }
     }
 }
 export default requestService

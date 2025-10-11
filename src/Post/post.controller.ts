@@ -1,16 +1,12 @@
 // const service = require("./post.service")
 import requestService from "./post.service"
 import type { Request, Response } from "express"
+import {IQueryParams, Post} from "./post.types"
 
-interface queryParams {
-    skip?: string,
-    take?: string,
-    filter?: string
-}
 
 const requestController = {
-getPosts: (req: Request, res: Response) => {
-    const query: queryParams = {};
+    getPosts: (req: Request, res: Response):void => {
+    const query: IQueryParams = {};
     if (req.query.skip) {
         query.skip = String(req.query.skip);
     }
@@ -29,8 +25,8 @@ getPosts: (req: Request, res: Response) => {
 
     res.status(200).json(response.data);
     },
-    createPost: async (req: Request, res: Response) => {
-        let data = req.body;
+    createPost: async (req: Request, res: Response): Promise<void> => {
+        let data:Post = req.body;
         const response = await requestService.createPost(data);
         if (response.status === "data incorrect"){
             res.status(422).json("Please, enter data correctly!");
@@ -39,7 +35,7 @@ getPosts: (req: Request, res: Response) => {
     
         res.status(201).json(response.data);
     },
-    getPostById: (req: Request, res: Response) => {
+    getPostById: (req: Request, res: Response): void => {
         const postId: number = Number(req.params.id);
         const response = requestService.getPostById(postId);
         if (response.status === "incorrect number"){
@@ -51,7 +47,16 @@ getPosts: (req: Request, res: Response) => {
             return;
         }
         res.status(200).json(response.data);
-    }
+    },
+    updatePostById: (req: Request, res: Response): void => {
+        const postId: number | undefined = Number(req.params.id)
+        const response = requestService.updatePostById(postId, req.body)
+        if (response.status === "error"){
+            res.status(404).json(response.message);
+            return;
+        }
+        res.status(200).json(response.data);
+    } 
 
 }
 

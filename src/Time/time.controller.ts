@@ -3,7 +3,7 @@ import requestServiceTime from "./time.service";
 
 
 const requestControllerTime = {
-    getTime: (req: Request, res: Response) => {
+    getTime: (req: Request, res: Response): void => {
         req = req
         const response = requestServiceTime.getTime();
         res.status(200).json({ time: response });

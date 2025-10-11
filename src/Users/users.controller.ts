@@ -3,12 +3,12 @@ import requestServiceUsers from "./users.service";
 
 
 const requestControllerUsers = {
-    getUsers: (req: Request, res: Response) => {
+    getUsers: (req: Request, res: Response): void => {
         req = req
         const response = requestServiceUsers.getUsers();
         res.status(200).json(response.data);
     },
-    getUserById: (req: Request, res: Response) => {
+    getUserById: (req: Request, res: Response): void => {
         const userId = Number(req.params.id);
         const fields = String(req.query.fields);
         const response = requestServiceUsers.getUserById(userId, fields);

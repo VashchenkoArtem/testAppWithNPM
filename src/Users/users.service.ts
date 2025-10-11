@@ -1,8 +1,10 @@
 import path from "path"
 import fs from "fs"
+import { IStatus } from "../Post/post.types";
+
 
 const requestServiceUsers = {
-    getUsers: () => {
+    getUsers: (): IStatus => {
         const pathToUsers = path.join(__dirname, "../../jsonFiles/users.json");
         const allUsers = JSON.parse(fs.readFileSync(pathToUsers, "utf-8"));
 
@@ -12,7 +14,7 @@ const requestServiceUsers = {
             data: filteredUsers
         };
     },
-    getUserById: (userId: number, fields: string) => {
+    getUserById: (userId: number, fields: string): IStatus => {
         const pathToUsers = path.join(__dirname, "../../jsonFiles/users.json");
         const allUsers = JSON.parse(fs.readFileSync(pathToUsers, "utf-8"));
         let choosedUser = [ ...allUsers ];
@@ -46,6 +48,7 @@ const requestServiceUsers = {
                 filteredUserAnswer[field] = choosedUser[field];
             })
             choosedUser = filteredUserAnswer;
+            console.log(filteredUserAnswer);
         }
         return {
             status: "success",
