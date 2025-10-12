@@ -50,10 +50,14 @@ const requestController = {
     },
     updatePostById: (req: Request, res: Response): void => {
         const postId: number | undefined = Number(req.params.id)
-        const response = requestService.updatePostById(postId, req.body)
+        const post: Post = req.body
+        const response = requestService.updatePostById(postId, post)
         if (response.status === "error"){
             res.status(404).json(response.message);
             return;
+        }
+        if (!(typeof post.id === "number" || typeof post.id === "undefined") || !(typeof post.title === "string" || typeof post.title === "undefined") || !(typeof post.description === "string" || typeof post.description === "undefined") || !(typeof post.image === "string" || typeof post.image === "undefined")){
+            res.status(400).json("Please, enter updated fields correctly!");
         }
         res.status(200).json(response.data);
     } 

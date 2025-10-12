@@ -13,6 +13,7 @@ export interface IStatus{
     message?: string,
     data?: {}
 }
+
 export type Post = IPost & {"id": number};
 export type CreatePostData = Omit<IPost, "id">;
 export type UpdatePostData = Partial<Omit<IPost, "id">>
