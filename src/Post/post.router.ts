@@ -6,6 +6,6 @@ const postRouter = express.Router();
 
 postRouter.get('/posts', requestController.getPosts)
 postRouter.post('/posts', requestController.createPost)
-// postRouter.get("/posts/:id", requestController.getPostById)
-// postRouter.patch("/posts/:id", requestController.updatePostById)
+postRouter.get("/posts/:id", requestController.getPostById)
+postRouter.patch("/posts/:id", requestController.updatePostById)
 export default postRouter

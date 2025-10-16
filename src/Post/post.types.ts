@@ -24,9 +24,15 @@ export interface IControllerContract{
     getPosts: (req: Request<object, Post[] | string, object, IQueryParams>,
         res: Response<Post[]|string>) => void,
     createPost: (req: Request<object, Post[] | string, CreatePostData>, 
-        res: Response<Post[]|string>) => void
+        res: Response<Post[]|string>) => void,
+    getPostById: (req: Request<{id : string}, Post | string, object>,
+        res: Response<Post | string>) => void,
+    updatePostById: (req: Request<{id : string}, Post | string, Post>,
+        res: Response<Post | string>) => void
 }
 export interface IServiceContract{
     getPosts: (params: IQueryParams) => IStatus<Post[]>,
-    createPost: (data: CreatePostData[] | CreatePostData) => Promise<IStatus<Post[]>>
+    createPost: (data: CreatePostData[] | CreatePostData) => Promise<IStatus<Post[]>>,
+    getPostById: (postId: number) => IStatus<Post>,
+    updatePostById: (postId: number, data: Post) => IStatus<Post>
 }

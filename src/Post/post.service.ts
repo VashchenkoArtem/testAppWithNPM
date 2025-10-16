@@ -74,49 +74,49 @@ const requestService:IServiceContract = {
             status: "success",
             data: newPosts
         }
+    },
+    getPostById: (postId) => {
+        const postsJson = path.join(__dirname, "../../jsonFiles/posts.json");
+        const posts = JSON.parse(fs.readFileSync(postsJson, "utf-8"));
+        const postIdNumber: number = Number(postId);
+        const filteredPosts: Post[] = [ ...posts];
+        if (isNaN(postIdNumber)){
+            return {
+                status: "incorrect number",
+                message: "Please, enter a correct number in parameters!"
+            }
+        }
+        if (postIdNumber > filteredPosts.length || postIdNumber < 0){
+            return {
+                status: "not found",
+                message: "Post with this ID is not found!"
+            }
+        }
+        const newFilteredPosts = filteredPosts.find((post) => {
+            return post.id === postIdNumber;
+        })
+        return {
+            status: "success",
+            data: newFilteredPosts
+        };
+    },
+    updatePostById: (postId , data) => {  
+        const postsJson = path.join(__dirname, "../../jsonFiles/posts.json");
+        const posts = JSON.parse(fs.readFileSync(postsJson, "utf-8"));
+        if (!postId || postId >= posts.length || postId < 0){
+            return {
+                "status": "error",
+                "message": "Please, enter post id correctly!"
+            }
+        }
+        const post: Post = posts.find((elPost: Post) => {
+            return elPost.id === postId
+        })
+        const updatedData: Post = Object.assign(post, data)
+        return {
+            "status": "Success",
+            "data": updatedData
+        }
     }
-    // getPostById: (postId: number): IStatus => {
-    //     const postsJson = path.join(__dirname, "../../jsonFiles/posts.json");
-    //     const posts = JSON.parse(fs.readFileSync(postsJson, "utf-8"));
-    //     const postIdNumber: number = Number(postId);
-    //     let filteredPosts: Post[] = [ ...posts];
-    //     if (isNaN(postIdNumber)){
-    //         return {
-    //             status: "incorrect number",
-    //             message: "Please, enter a correct number in parameters!"
-    //         }
-    //     }
-    //     if (postIdNumber > filteredPosts.length || postIdNumber < 0){
-    //         return {
-    //             status: "not found",
-    //             message: "Post with this ID is not found!"
-    //         }
-    //     }
-    //     filteredPosts = filteredPosts.filter((post) => {
-    //         return post.id === postIdNumber;
-    //     })
-    //     return {
-    //         status: "success",
-    //         data: filteredPosts
-    //     };
-    // },
-    // updatePostById: (postId: number , data: Post): IStatus => {  
-    //     const postsJson = path.join(__dirname, "../../jsonFiles/posts.json");
-    //     const posts = JSON.parse(fs.readFileSync(postsJson, "utf-8"));
-    //     if (!postId || postId >= posts.length || postId < 0){
-    //         return {
-    //             "status": "error",
-    //             "message": "Please, enter post id correctly!"
-    //         }
-    //     }
-    //     const post: Post = posts.find((elPost: Post) => {
-    //         return elPost.id === postId
-    //     })
-    //     const updatedData: Post = Object.assign(post, data)
-    //     return {
-    //         "status": "Success",
-    //         "data": updatedData
-    //     }
-    // }
 }
 export default requestService
