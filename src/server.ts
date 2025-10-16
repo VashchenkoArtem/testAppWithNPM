@@ -4,8 +4,8 @@
 // const fsPromises = require("fs/promises");
 
 import postRouter from "./Post/post.router"
-import timeRouter from "./Time/time.router";
-import userRouter from "./Users/users.router"
+// import timeRouter from "./Time/time.router"; 
+// import userRouter from "./Users/users.router"
 import type { Express } from "express";
 import express from "express"
 
@@ -15,8 +15,8 @@ const app: Express = express();
 
 app.use(express.json());
 app.use(postRouter);
-app.use(timeRouter);
-app.use(userRouter);
+// app.use(timeRouter);
+// app.use(userRouter);
 
 app.listen(PORT, HOST, () => {
     console.log(`Час: \nhttp://${HOST}:${PORT}/timestamp\n`);
