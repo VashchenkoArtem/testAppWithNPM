@@ -43,6 +43,20 @@ async function CreateRelation(){
         console.log(error)
     }
 }
+async function FindById(id: number){
+    try {
+        const foundedPost = await client.post.findUnique({
+            where: {
+                id: id
+            }
+        })
+        console.log(foundedPost)
+    }
+    catch(error){
+        console.log(error)
+    }
+}
 CreatePost();
 CreateTag();
 CreateRelation();
+FindById(1)
