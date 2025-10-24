@@ -1,4 +1,5 @@
 import { Request, Response} from "express"
+import { Prisma } from "../generated/prisma"
 
 export interface IQueryParams {
     skip?: string,
@@ -16,23 +17,30 @@ export interface IStatus<T>{
     data?: T
 }
 
-export type Post = IPost & {"id": number};
-export type CreatePostData = Omit<IPost, "id">;
-export type UpdatePostData = Partial<Omit<IPost, "id">>
+export type Post = Prisma.PostGetPayload<{}>;
+export type PostWithTags = Prisma.PostGetPayload<{
+    include: {
+        tags: true
+    }
+}>;
+export type CreatePost = Prisma.PostCreateInput;
+export type CreatePostUnchecked = Omit<Prisma.PostUncheckedCreateInput, 'id'>;
+export type UpdatePost = Prisma.PostUpdateInput;
+export type UpdatePostUnchecked = Prisma.PostUncheckedUpdateInput
 
 export interface IControllerContract{
     getPosts: (req: Request<object, Post[] | string, object, IQueryParams>,
         res: Response<Post[]|string>) => void,
-    createPost: (req: Request<object, Post[] | string, CreatePostData>, 
-        res: Response<Post[]|string>) => void,
+    createPost: (req: Request<object, CreatePost[] | string, CreatePost[]>,
+        res: Response<CreatePost[]|string>) => void,
     getPostById: (req: Request<{id : string}, Post | string, object>,
         res: Response<Post | string>) => void,
-    updatePostById: (req: Request<{id : string}, Post | string, Post>,
-        res: Response<Post | string>) => void
+    updatePostById: (req: Request<{id : string}, UpdatePost | string, UpdatePost>,
+        res: Response<UpdatePost | string>) => void
 }
 export interface IServiceContract{
-    getPosts: (params: IQueryParams) => IStatus<Post[]>,
-    createPost: (data: CreatePostData[] | CreatePostData) => Promise<IStatus<Post[]>>,
-    getPostById: (postId: number) => IStatus<Post>,
-    updatePostById: (postId: number, data: Post) => IStatus<Post>
+    getPosts: (params: IQueryParams) => Promise<IStatus<Post[]>>,
+    createPost: (data: CreatePost[] | CreatePost) => Promise<IStatus<CreatePost[]>>,
+    getPostById: (postId: number) => Promise<IStatus<Post>>,
+    updatePostById: (postId: number, data: UpdatePost) => Promise<IStatus<UpdatePost>>
 }

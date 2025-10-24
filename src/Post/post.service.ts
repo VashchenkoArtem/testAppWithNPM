@@ -1,13 +1,9 @@
-import path from "path"
-import fs from "fs"
-import fsPromises from "fs/promises"
-import {IQueryParams, IServiceContract, Post} from "./post.types"
-
+import {CreatePost, IQueryParams, IServiceContract, Post, UpdatePost} from "./post.types"
+import {client, CreateNewPost, updatePostById} from "../../seed"
 
 const requestService:IServiceContract = {
-    getPosts: (params) => {
-        const postsJson = path.join(__dirname, "../../jsonFiles/posts.json");
-        const posts = JSON.parse(fs.readFileSync(postsJson, "utf-8"));
+    getPosts: async (params) => {
+        const posts: Post[] = await client.post.findMany();
         let slicedPosts: Post[] = [ ...posts ];
         let skipNumber: number = 0;
         const { skip, take, filter}: IQueryParams = params
@@ -47,12 +43,10 @@ const requestService:IServiceContract = {
         }
     },
     createPost: async (data) => {
-        const postsJson = path.join(__dirname, "../../jsonFiles/posts.json");
-        const posts = JSON.parse(fs.readFileSync(postsJson, "utf-8"));
         if (!Array.isArray(data)){
                 data = [data];
         }
-        let newPosts: Post[] = [];
+        let newPosts: CreatePost[] = [];
         for (let addedPost of data){
             if (!addedPost.title || !addedPost.description || !addedPost.image){
                 return {
@@ -60,24 +54,19 @@ const requestService:IServiceContract = {
                     message: "Please, enter data correctly!"
                 }
             }
-            let postId: number = 0;
-            if (posts.length > 0){  
-                postId = posts[posts.length - 1].id + 1;
-            }
-            const newPost: Post = { ...addedPost, id: postId };
-            newPosts.push(newPost);
-            posts.push(newPost);
-            await fsPromises.writeFile(postsJson, [JSON.stringify(posts)]);
-        }    
-        posts.push(newPosts);  
+            console.log(addedPost)
+            const newPost: CreatePost = { ...addedPost};
+            newPosts.push(newPost)
+            console.log(newPost.tags)
+            await CreateNewPost(newPost)
+        }
         return {
             status: "success",
             data: newPosts
         }
     },
-    getPostById: (postId) => {
-        const postsJson = path.join(__dirname, "../../jsonFiles/posts.json");
-        const posts = JSON.parse(fs.readFileSync(postsJson, "utf-8"));
+    getPostById: async (postId) => {
+        const posts : Post[] = await client.post.findMany();
         const postIdNumber: number = Number(postId);
         const filteredPosts: Post[] = [ ...posts];
         if (isNaN(postIdNumber)){
@@ -100,19 +89,28 @@ const requestService:IServiceContract = {
             data: newFilteredPosts
         };
     },
-    updatePostById: (postId , data) => {  
-        const postsJson = path.join(__dirname, "../../jsonFiles/posts.json");
-        const posts = JSON.parse(fs.readFileSync(postsJson, "utf-8"));
+    updatePostById: async (postId , data) => {  
+        const posts: Post[] = await client.post.findMany();
         if (!postId || postId >= posts.length || postId < 0){
             return {
                 "status": "error",
                 "message": "Please, enter post id correctly!"
             }
         }
-        const post: Post = posts.find((elPost: Post) => {
-            return elPost.id === postId
-        })
-        const updatedData: Post = Object.assign(post, data)
+        const post: Post | undefined = posts.find((elPost: Post) => elPost.id === postId);
+        const correctPost: UpdatePost = {title: post?.title,
+                                        description: post?.description,
+                                        image: post?.image
+        }
+        if (!post){
+            return{ 
+                "status": "error",
+                "message": "Post not found!"
+            }
+        }
+        const updatedData: UpdatePost = Object.assign(correctPost, data)
+        console.log(updatedData)
+        await updatePostById(postId, updatedData)
         return {
             "status": "Success",
             "data": updatedData
