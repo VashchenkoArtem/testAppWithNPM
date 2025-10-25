@@ -4,6 +4,7 @@ import requestService from "./post.service"
 import {CreatePost, IQueryParams, IStatus, Post, UpdatePost} from "./post.types"
 import { IControllerContract } from "./post.types"
 
+
 const requestController: IControllerContract = {
     getPosts: async (req, res): Promise<void> => {
         const query: IQueryParams = {};
@@ -17,7 +18,7 @@ const requestController: IControllerContract = {
             query.filter = String(req.query.filter);
         }
         const response: IStatus<Post[]> = await requestService.getPosts(query);
-        if (response.status === "incorrect number") {
+        if (response.status === "incorrect number"){
             res.status(400).json("Please, enter a correct number in parameters!");
             return;
         }
@@ -61,7 +62,12 @@ const requestController: IControllerContract = {
             return;
         }
         res.status(200).json(response.data);
-    } 
-}
+    },
+    deletePostById: async (req, res) => {
+        const postId = Number(req.params.id)
+        const response: IStatus<Post> = await requestService.deletePostById(postId)
+        res.status(200).json(response.data)
+    }
+} 
 
 export default requestController

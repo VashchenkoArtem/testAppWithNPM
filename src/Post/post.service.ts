@@ -115,6 +115,23 @@ const requestService:IServiceContract = {
             "status": "Success",
             "data": updatedData
         }
+    },
+    deletePostById: async (postId) => {
+        try{
+            const post = await client.post.delete({
+                where: {
+                    id: postId
+                }
+            })
+            return {
+                "status": "Succes",
+                "data": post
+            }
+        }catch(error){
+            return {"status": "error",
+                "message": error
+            }
+        }
     }
 }
 export default requestService
