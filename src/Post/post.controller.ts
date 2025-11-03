@@ -1,7 +1,5 @@
-// const service = require("./post.service")
 import requestService from "./post.service"
-// import type { Request, Response } from "express"
-import {CreatePost, IQueryParams, IStatus, Post, UpdatePost} from "./post.types"
+import {BatchPayload, CreatePost, IQueryParams, IStatus, Post, UpdatePost} from "./post.types"
 import { IControllerContract } from "./post.types"
 
 
@@ -26,24 +24,21 @@ const requestController: IControllerContract = {
     },
     createPost: async (req, res): Promise<void> => {
             let data: CreatePost | CreatePost[] = req.body;
-            const response: IStatus<CreatePost[]> = await requestService.createPost(data);
+            const response: IStatus<BatchPayload> = await requestService.createPost(data);
             if (response.status === "data incorrect"){
                 res.status(422).json("Please, enter data correctly!");
                 return;
             }
-            console.log("response start")
-            console.log(response.data);
-            console.log("response finish")
-            res.status(201).json(response.data);
+            res.status(201).json("Post created succesfuly!");
     },
     getPostById: async (req, res): Promise<void> => {
         const postId: number = Number(req.params.id);
         const response: IStatus<Post> = await requestService.getPostById(postId);
-        if (response.status === "incorrect number"){
+        if (response.status === "Problem with ID"){
             res.status(400).json("Please, enter a correct number in parameters!");
             return;
         }
-        if (response.status === "not found"){
+        if (response.status === "Does not exist"){
             res.status(404).json("Post with this ID is not found!");
             return;
         }
@@ -53,12 +48,12 @@ const requestController: IControllerContract = {
         const postId: number | undefined = Number(req.params.id)
         const post: UpdatePost = req.body
         const response: IStatus<UpdatePost> = await requestService.updatePostById(postId, post);
-        if (response.status === "error") {
+        if (response.status === "Does not exist") {
             res.status(404).json(response.message);
             return;
         }
-        if (!(typeof post.title === "string" || typeof post.title === "undefined") || !(typeof post.description === "string" || typeof post.description === "undefined") || !(typeof post.image === "string" || typeof post.image === "undefined")){
-            res.status(400).json("Please, enter updated fields correctly!");
+        if (response.status === "Problem with ID"){
+            res.status(400).json(response.message)
             return;
         }
         res.status(200).json(response.data);
