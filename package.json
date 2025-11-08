@@ -5,13 +5,17 @@
   "main": "scripts.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/server.js"
+    "start": "npx ts-node server.ts",
+    "migrate": "npx prisma migrate dev"
   },
   "author": "Vashchenko Artem",
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^6.17.1",
+    "@types/jsonwebtoken": "^9.0.10",
+    "envalid": "^8.1.1",
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "moment": "^2.30.1",
     "prisma": "^6.17.1",
     "ts-node": "^10.9.2",
