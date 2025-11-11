@@ -5,7 +5,7 @@
   "main": "scripts.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx ts-node server.ts",
+    "start": "npx ts-node src/server.ts",
     "migrate": "npx prisma migrate dev"
   },
   "author": "Vashchenko Artem",

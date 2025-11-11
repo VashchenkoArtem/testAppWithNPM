@@ -15,6 +15,22 @@ export const userRepository: IRepositoryContract = {
                 if (error.code === "P2024"){
                     console.log("Timed out fetching a new connection from the connection pool")
                 }
+                if (error.code === "P2000"){
+                    console.log("Too long value for field")
+                }
+                if (error.code === "P2002"){
+                    console.log("Unique error")
+                }
+                if (error.code === "P2005"){
+                    console.log("Error with field`s type")
+                }
+                if (error.code === "P2014"){
+                    console.log("Because of it will be errors with relations in future")
+                }
+                if (error.code === "P2019"){
+                    console.log("Entering error")
+                }
+                
             }
             throw error
         }
