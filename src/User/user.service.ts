@@ -5,8 +5,9 @@ import { userRepository } from "./user.repository";
 export const userService : IServiceContract = {
     createUser: async(data)=>{
         const createdUser = await userRepository.createUser(data)
+        console.log("asdadasa")
         if (!createdUser){
-            return "error"
+            return "Error. User didn`t create"
         }
         return createdUser
 
@@ -14,7 +15,7 @@ export const userService : IServiceContract = {
     findUserByEmail: async(data)=>{
         const foundedUser = await userRepository.findUserByEmail(data.email)
         if (!foundedUser){
-            return "error"
+            return `Can't find user`
         }
         if (!(data.password === foundedUser.password)){
             return "Password is incorrect!"
