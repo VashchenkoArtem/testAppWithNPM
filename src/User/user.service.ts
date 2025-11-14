@@ -1,5 +1,7 @@
 import { IServiceContract } from "./user.types";
 import { userRepository } from "./user.repository";
+import { sign } from "jsonwebtoken";
+import { ENV } from "../config/env";
 
 
 export const userService : IServiceContract = {
@@ -12,7 +14,10 @@ export const userService : IServiceContract = {
         if (!createdUser){
             return "Error. User didn`t create!"
         }
-        return createdUser
+        const token = sign({id: createdUser.id}, ENV.SECRET_KEY, {
+            expiresIn: "7d"
+        })
+        return { token }
 
     },
     findUserByEmail: async(data)=>{
@@ -22,6 +27,16 @@ export const userService : IServiceContract = {
         }
         if (!(data.password === foundedUser.password)){
             return "Password is incorrect!"
+        }
+        const token = sign({id: foundedUser.id}, ENV.SECRET_KEY, {
+            expiresIn: "7d"
+        })
+        return { token }
+    },
+    me: async(id)=>{
+        const foundedUser = await userRepository.findByIdWithoutPassword(id)
+        if (!foundedUser){
+            return "Cannot find user"
         }
         return foundedUser
     }
