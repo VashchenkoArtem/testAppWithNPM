@@ -3,7 +3,6 @@ import {client} from "../../seed"
 import { PostRepository } from "./post.repository";
 
 
-
 const requestService:IServiceContract = {
     getPosts: async (params) => {
         const products = await PostRepository.getPosts({params})
@@ -12,11 +11,8 @@ const requestService:IServiceContract = {
             data: products
         }
     },
-    createPost: async (data) => {
-        if (!Array.isArray(data)){
-                data = [data];
-        }
-        const newPosts = await PostRepository.createPost(data)
+    createPost: async (data, userId) => {
+        const newPosts = await PostRepository.createPost(data, userId)
         return {
             status: "success",
             data: newPosts

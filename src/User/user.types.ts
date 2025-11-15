@@ -13,6 +13,7 @@ export type IStatus<T> = {
     message?: string,
     data: T
 }
+export type UserWithId = Prisma.UserGetPayload<{}>
 export type CreateUser = Prisma.UserUncheckedCreateInput
 
 export interface IControllerContract {

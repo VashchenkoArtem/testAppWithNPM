@@ -15,12 +15,18 @@ export const PostRepository: IRepositoryContract ={
             throw error
         }
     },
-    createPost: async(posts) => {
+    createPost: async(post, userId) => {
         try{
-            const newPosts = await client.post.createMany({
-                data: posts
+            const newPost = await client.post.create({
+                data: {
+                    title: post.title,
+                    description: post.description,
+                    image: post.image,
+                    tags: post.tags,
+                    userId: userId
+                }
             })
-            return newPosts
+            return newPost
         }catch(error){
             throw error
         }

@@ -28,7 +28,6 @@ export const userController: IControllerContract = {
             return;
         }
         const [ typeToken, token ] = headers.split(" ");
-        console.log()
         if (typeToken !== "Bearer" || !token){
             res.status(401).json("Invalid authorization!");
             return;

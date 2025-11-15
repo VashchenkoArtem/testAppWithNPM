@@ -1,5 +1,5 @@
 import requestService from "./post.service"
-import {BatchPayload, CreatePost, IQueryParams, IStatus, Post, UpdatePost} from "./post.types"
+import { CreatePost, IQueryParams, IStatus, Post, UpdatePost } from "./post.types"
 import { IControllerContract } from "./post.types"
 
 
@@ -23,8 +23,9 @@ const requestController: IControllerContract = {
         res.status(200).json(response.data);
     },
     createPost: async (req, res): Promise<void> => {
-            let data: CreatePost | CreatePost[] = req.body;
-            const response: IStatus<BatchPayload> = await requestService.createPost(data);
+            let data = req.body;
+            const userId = res.locals.userId
+            const response: IStatus<CreatePost> = await requestService.createPost(data, userId);
             if (response.status === "data incorrect"){
                 res.status(422).json("Please, enter data correctly!");
                 return;

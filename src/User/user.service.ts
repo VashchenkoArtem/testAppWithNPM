@@ -2,6 +2,7 @@ import { IServiceContract } from "./user.types";
 import { userRepository } from "./user.repository";
 import { sign } from "jsonwebtoken";
 import { ENV } from "../config/env";
+import { compare, hash } from "bcrypt";
 
 
 export const userService : IServiceContract = {
@@ -10,7 +11,9 @@ export const userService : IServiceContract = {
         if (user){
             return "Error. User already exist!"
         }
-        const createdUser = await userRepository.createUser(data)
+        const hashedPassword = await hash(data.password, 10)
+        const dataWithHashedPassword = {...data, password: hashedPassword}
+        const createdUser = await userRepository.createUser(dataWithHashedPassword)
         if (!createdUser){
             return "Error. User didn`t create!"
         }
@@ -25,7 +28,8 @@ export const userService : IServiceContract = {
         if (!foundedUser){
             return `Can't find user!`
         }
-        if (!(data.password === foundedUser.password)){
+        const isMatch = await compare(data.password, foundedUser.password)
+        if (!(isMatch)){
             return "Password is incorrect!"
         }
         const token = sign({id: foundedUser.id}, ENV.SECRET_KEY, {

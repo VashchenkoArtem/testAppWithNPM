@@ -20,6 +20,8 @@ model Post {
   description String
   image String
   tags TagsOnPosts[]
+  createdBy User @relation(fields: [userId], references: [id])
+  userId Int
 }
 model Tag {
   id Int @unique @default(autoincrement()) @id
@@ -37,7 +39,11 @@ model TagsOnPosts{
 
 model User{
   id Int @unique @default(autoincrement()) @id
-  name String
+  firstName String
+  secondName String
   email String @unique
+  avatar String @unique
   password String
+  isAdmin Boolean @default(false)
+  posts Post[]
 }
