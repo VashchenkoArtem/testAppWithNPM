@@ -11,11 +11,9 @@ const app: Express = express();
 app.use(express.json());
 app.use(postRouter);
 app.use(tagRouter);
-// app.use(timeRouter);
 app.use(userRouter);
 
 app.listen(PORT, HOST, () => {
-    console.log(`Час: \nhttp://${HOST}:${PORT}/timestamp\n`);
     console.log(`Пости: \nhttp://${HOST}:${PORT}/posts?skip=1&take=2`);
     console.log(`Користувачі: \nhttp://${HOST}:${PORT}/users`);
 })
