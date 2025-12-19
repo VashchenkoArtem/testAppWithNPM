@@ -9,23 +9,38 @@ export const PostRepository: IRepositoryContract ={
             const posts = await client.post.findMany({
                 skip: skip ? Number(skip) : undefined,
                 take: take ? Number(take) : undefined,
+                include: {
+                    tags: {include:
+                        {tag: true}
+                    }
+                }
             })
             return posts
         }catch(error){
             throw error
         }
     },
-    createPost: async(post, userId) => {
+    createPost: async(post) => {
         try{
+            const tags = post.tags as []
             const newPost = await client.post.create({
                 data: {
-                    title: post.title,
+                    title: post.title, 
                     description: post.description,
                     image: post.image,
-                    tags: post.tags,
-                    userId: userId
+                    userId: post.userId,
+                    likes: post.likes,
+                    tags: post.tags && tags.length > 0
+                    ? {
+                        createMany: {
+                            data: tags.map(tagId => ({ tagId }))
+                        }
+                        }
+                    : undefined
+
+                    }
                 }
-            })
+            )
             return newPost
         }catch(error){
             throw error
@@ -68,10 +83,7 @@ export const PostRepository: IRepositoryContract ={
                     id: postId
                 }
             })
-            return {
-                "status": "Succes",
-                "data": post
-            }
+            return post
         }catch(error){
             throw error
         }

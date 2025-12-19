@@ -1,6 +1,6 @@
 import { IRepositoryContract } from "./user.types";
 import { client } from "../client/client";
-import { Prisma } from "../generated/prisma";
+import { Prisma } from '@prisma/client'
 
 
 export const userRepository: IRepositoryContract = {

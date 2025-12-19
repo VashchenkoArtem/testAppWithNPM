@@ -1,15 +1,10 @@
 import { Request, Response} from "express"
-import { Prisma } from "../generated/prisma"
+import { Prisma } from '@prisma/client'
 
 export interface IQueryParams {
     skip?: string,
     take?: string,
     filter?: string
-}
-export interface IPost{
-    title: string,
-    description: string,
-    image: string
 }
 export interface IStatus<T>{
     status: string,
@@ -21,18 +16,23 @@ export type Post = Prisma.PostGetPayload<{}>;
 
 export type PostWithTags = Prisma.PostGetPayload<{
     include: {
-        tags: true
+        tags: {
+        include: {
+            tag: true;
+        }
+        }
     }
 }>;
 export type CreatePost = Prisma.PostUncheckedCreateInput;
+
 export type CreatePostUnchecked = Omit<Prisma.PostUncheckedCreateInput, 'id'>;
 export type UpdatePost = Prisma.PostUpdateInput;
 export type UpdatePostUnchecked = Prisma.PostUncheckedUpdateInput
 export type BatchPayload = Prisma.BatchPayload
 
 export interface IControllerContract{
-    getPosts: (req: Request<object, Post[] | string, object, IQueryParams>,
-        res: Response<Post[]|string>) => void,
+    getPosts: (req: Request<object, PostWithTags[] | string, object, IQueryParams>,
+        res: Response<PostWithTags[]|string>) => void,
     createPost: (req: Request<object, CreatePost|string, CreatePost>,
         res: Response<CreatePost|string, {userId: number}>) => void,
     getPostById: (req: Request<{id : string}, Post | string, object>,
@@ -45,17 +45,17 @@ export interface IControllerContract{
 }
 
 export interface IServiceContract{
-    getPosts: (params: IQueryParams) => Promise<IStatus<Post[]>>,
-    createPost: (data: CreatePost, userId: number) => Promise<IStatus<CreatePost>>,
+    getPosts: (params: IQueryParams) => Promise<IStatus<PostWithTags[]>>,
+    createPost: (data: CreatePost) => Promise<IStatus<CreatePost>>,
     getPostById: (postId: number) => Promise<IStatus<Post>>,
     updatePostById: (postId: number, data: UpdatePost) => Promise<IStatus<UpdatePost>>,
     deletePostById: (postId: number) => Promise<{status: string, data?: Post}>
 }
 
 export interface IRepositoryContract{
-    getPosts: (paramsObj: {params: IQueryParams}) => Promise<Post[]>,
-    createPost: (data: CreatePost, user: number) => Promise<Post>,
+    getPosts: (paramsObj: {params: IQueryParams}) => Promise<PostWithTags[]>,
+    createPost: (data: CreatePost) => Promise<Post>,
     getPostById: (postId: number) => Promise<Post | null>,
     updatePostById: (postId: number, data: UpdatePost) => Promise<UpdatePost>,
-    deletePostById: (postId: number) => Promise<{status: string, data?: Post}>
+    deletePostById: (postId: number) => Promise<Post>
 }

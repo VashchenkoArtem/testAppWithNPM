@@ -1,12 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -15,45 +8,38 @@ datasource db {
 }
 
 model Post {
-  id Int @unique @default(autoincrement()) @id
-  title String
+  id          Int           @id @unique @default(autoincrement())
+  title       String
   description String
-  image String
-  tags TagsOnPosts[]
-  createdBy User @relation(fields: [userId], references: [id])
-  userId Int
-  postLike PostLike[]
+  image       String
+  userId      Int
+  likes       Int
+  createdBy   User          @relation(fields: [userId], references: [id])
+  tags        TagsOnPosts[]
 }
+
 model Tag {
-  id Int @unique @default(autoincrement()) @id
-  name String
+  id    Int           @id @unique @default(autoincrement())
+  name  String
   posts TagsOnPosts[]
 }
 
-model TagsOnPosts{
-  post Post @relation(fields: [postId], references: [id])
-  postId Int 
-  tag Tag @relation(fields: [tagId], references: [id])
-  tagId Int
+model TagsOnPosts {
+  postId Int
+  tagId  Int
+  tag    Tag  @relation(fields: [tagId], references: [id])
+  post   Post @relation(fields: [postId], references: [id])
+
   @@id([postId, tagId])
 }
 
-model User{
-  id Int @unique @default(autoincrement()) @id
-  firstName String
+model User {
+  id         Int     @id @unique @default(autoincrement())
+  firstName  String
   secondName String
-  email String @unique
-  avatar String
-  password String
-  isAdmin Boolean @default(false)
-  posts Post[]
-  postLike PostLike[]
-}
-
-model PostLike{
-  post Post @relation(fields: [postId], references: [id])
-  postId Int
-  user User @relation(fields: [userId], references: [id])
-  userId Int
-  @@id([postId, userId])
+  email      String  @unique
+  avatar     String
+  password   String
+  isAdmin    Boolean @default(false)
+  posts      Post[]
 }

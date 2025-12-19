@@ -1,5 +1,4 @@
 import {IServiceContract} from "./post.types"
-import {client} from "../../seed"
 import { PostRepository } from "./post.repository";
 
 
@@ -11,8 +10,8 @@ const requestService:IServiceContract = {
             data: products
         }
     },
-    createPost: async (data, userId) => {
-        const newPosts = await PostRepository.createPost(data, userId)
+    createPost: async (data) => {
+        const newPosts = await PostRepository.createPost(data)
         return {
             status: "success",
             data: newPosts
@@ -62,14 +61,10 @@ const requestService:IServiceContract = {
     },
     deletePostById: async (postId) => {
         try{
-            const post = await client.post.delete({
-                where: {
-                    id: postId
-                }
-            })
+            const deletedPost = await PostRepository.deletePostById(postId)
             return {
-                "status": "Succes",
-                "data": post
+                "status": "Success",
+                "data": deletedPost
             }
         }catch(error){
             return {"status": "error",

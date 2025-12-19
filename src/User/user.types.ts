@@ -1,4 +1,4 @@
-import { Prisma } from "../generated/prisma";
+import { Prisma } from '@prisma/client'
 import type { Request, Response } from "express";
 export type UserWithoutPassword = Prisma.UserGetPayload<{
     omit: {

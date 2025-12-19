@@ -15,7 +15,7 @@ const requestController: IControllerContract = {
         if (req.query.filter){
             query.filter = String(req.query.filter);
         }
-        const response: IStatus<Post[]> = await requestService.getPosts(query);
+        const response = await requestService.getPosts(query);
         if (response.status === "incorrect number"){
             res.status(400).json("Please, enter a correct number in parameters!");
             return;
@@ -24,8 +24,7 @@ const requestController: IControllerContract = {
     },
     createPost: async (req, res): Promise<void> => {
             let data = req.body;
-            const userId = res.locals.userId
-            const response: IStatus<CreatePost> = await requestService.createPost(data, userId);
+            const response: IStatus<CreatePost> = await requestService.createPost(data);
             if (response.status === "data incorrect"){
                 res.status(422).json("Please, enter data correctly!");
                 return;
