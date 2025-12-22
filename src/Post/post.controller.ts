@@ -34,13 +34,13 @@ const requestController: IControllerContract = {
     },
     getPostById: async (req, res): Promise<void> => {
         const postId = Number(req.params.id);
-        const inclusion = req.query.include;
+        const inclusion = String(req.query.include);
         let likedBy = false
         let comments = false
-        if (inclusion === "likedBy"){
+        if (inclusion.includes("likedBy")){
             likedBy = true
         }
-        if (inclusion === "comments"){
+        if (inclusion.includes("comments")){
             comments = true
         }
         const response = await requestService.getPostById(postId, likedBy, comments);

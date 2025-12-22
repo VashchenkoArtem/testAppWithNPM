@@ -12,7 +12,9 @@ export const PostRepository: IRepositoryContract ={
                 include: {
                     tags: {include:
                         {tag: true}
-                    }
+                    },
+                    createdBy: true,
+                    likes: true
                 }
             })
             return posts
