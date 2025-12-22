@@ -1,3 +1,4 @@
+import { PostRepository } from "./post.repository";
 import requestService from "./post.service"
 import { CreatePost, IQueryParams, IStatus, Post, UpdatePost } from "./post.types"
 import { IControllerContract } from "./post.types"
@@ -32,8 +33,17 @@ const requestController: IControllerContract = {
             res.status(201).json("Post created succesfuly!");
     },
     getPostById: async (req, res): Promise<void> => {
-        const postId: number = Number(req.params.id);
-        const response: IStatus<Post> = await requestService.getPostById(postId);
+        const postId = Number(req.params.id);
+        const inclusion = req.query.include;
+        let likedBy = false
+        let comments = false
+        if (inclusion === "likedBy"){
+            likedBy = true
+        }
+        if (inclusion === "comments"){
+            comments = true
+        }
+        const response = await requestService.getPostById(postId, likedBy, comments);
         if (response.status === "Problem with ID"){
             res.status(400).json("Please, enter a correct number in parameters!");
             return;
@@ -62,6 +72,36 @@ const requestController: IControllerContract = {
         const postId = Number(req.params.id)
         const response: IStatus<Post> = await requestService.deletePostById(postId)
         res.status(200).json(response.data)
+    },
+    createComment: async(req, res) => {
+        const commentData = req.body
+        if (!commentData){
+            res.status(422).json("Please, enter data correctly!");
+            return;
+        }
+        const response = await requestService.createComment(commentData)
+        if (!response){
+            res.status(500).json("Comment doesn`t create!");
+            return;
+        }
+        res.status(201).json(response)
+    },
+    likePost: async(req, res) => {
+        const postId = Number(req.params.postId)
+        const userId = Number(req.params.userId)
+        const like = await PostRepository.findLike(postId, userId)
+        if (like){
+            res.status(400).json("You have already liked this post!")
+            return;
+        }
+        const response = await requestService.likePost(postId, userId)
+        res.status(200).json(response)
+    },
+    unlikePost: async(req, res) => {
+        const postId = Number(req.params.postId)
+        const userId = Number(req.params.userId)
+        const response = await PostRepository.unlikePost(postId, userId)
+        res.status(200).json(response)
     }
 } 
 

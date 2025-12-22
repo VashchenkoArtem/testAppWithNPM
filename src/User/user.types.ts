@@ -13,6 +13,8 @@ export type IStatus<T> = {
     message?: string,
     data: T
 }
+
+
 export type UserWithId = Prisma.UserGetPayload<{}>
 export type CreateUser = Prisma.UserUncheckedCreateInput
 
@@ -29,14 +31,17 @@ export interface IControllerContract {
         req: Request<object, UserWithoutPassword | string, object, object>,
         res: Response<UserWithoutPassword | string>
     ) => Promise<void>
+
 }
 export interface IServiceContract {
     createUser: (data: CreateUser) => Promise<IResponse | string>
     findUserByEmail: (data: CreateUser) => Promise<IResponse | string>
     me: (id: number) => Promise<UserWithoutPassword | string>
+
 }
 export interface IRepositoryContract {
     createUser: (data: CreateUser) => Promise<CreateUser | null>
     findUserByEmail: (email: string) => Promise<CreateUser | null>
     findByIdWithoutPassword: (id: number) => Promise<UserWithoutPassword | null>
+
 }

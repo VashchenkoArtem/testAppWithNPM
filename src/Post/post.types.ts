@@ -11,9 +11,16 @@ export interface IStatus<T>{
     message?: string,
     data?: T
 }
+export type Comment = Prisma.CommentGetPayload<{}>
+export type CreateComment = Prisma.CommentUncheckedCreateInput
 
 export type Post = Prisma.PostGetPayload<{}>;
-
+export type PostWithRelations = Prisma.PostGetPayload<{
+    include: {
+        likes: true,
+        comments: true
+    }
+}>
 export type PostWithTags = Prisma.PostGetPayload<{
     include: {
         tags: {
@@ -23,39 +30,60 @@ export type PostWithTags = Prisma.PostGetPayload<{
         }
     }
 }>;
-export type CreatePost = Prisma.PostUncheckedCreateInput;
 
-export type CreatePostUnchecked = Omit<Prisma.PostUncheckedCreateInput, 'id'>;
+export type PostLike = Prisma.PostLikeGetPayload<{}>;
+export type CreatePostLike = Prisma.PostLikeUncheckedCreateInput;
+
+export type CreatePost = Prisma.PostUncheckedCreateInput;
 export type UpdatePost = Prisma.PostUpdateInput;
 export type UpdatePostUnchecked = Prisma.PostUncheckedUpdateInput
-export type BatchPayload = Prisma.BatchPayload
+
 
 export interface IControllerContract{
     getPosts: (req: Request<object, PostWithTags[] | string, object, IQueryParams>,
         res: Response<PostWithTags[]|string>) => void,
     createPost: (req: Request<object, CreatePost|string, CreatePost>,
         res: Response<CreatePost|string, {userId: number}>) => void,
-    getPostById: (req: Request<{id : string}, Post | string, object>,
-        res: Response<Post | string>) => void,
+    getPostById: (req: Request<{id : string}, PostWithRelations | string, object>,
+        res: Response<PostWithRelations | string>) => void,
     updatePostById: (req: Request<{id : string}, UpdatePost | string, UpdatePost>,
         res: Response<UpdatePost | string>) => void,
     deletePostById: (req: Request<{id: string}, Post | string, object>,
         res: Response<Post | string> 
+    ) => void,
+    createComment: (
+        req: Request<{postId: string}, Comment | string, CreateComment >,
+        res: Response<Comment | string>
+    ) => void
+    likePost: (
+        req: Request<{postId: string, userId: string}, PostLike | string, object>,
+        res: Response<PostLike | string>
+    ) => void
+    unlikePost: (
+        req: Request<{postId: string, userId: string}, PostLike | string, object>,
+        res: Response<PostLike | string>
     ) => void
 }
 
 export interface IServiceContract{
     getPosts: (params: IQueryParams) => Promise<IStatus<PostWithTags[]>>,
     createPost: (data: CreatePost) => Promise<IStatus<CreatePost>>,
-    getPostById: (postId: number) => Promise<IStatus<Post>>,
+    getPostById: (postId: number, likedBy: boolean, comments: boolean) => Promise<IStatus<PostWithRelations>>,
     updatePostById: (postId: number, data: UpdatePost) => Promise<IStatus<UpdatePost>>,
     deletePostById: (postId: number) => Promise<{status: string, data?: Post}>
+    createComment: (data: CreateComment) => Promise<Comment | string>
+    likePost: (postId: number, userId: number) => Promise<PostLike | string>
+    unlikePost: (postId: number, userId: number) => Promise<PostLike | string>
 }
 
 export interface IRepositoryContract{
     getPosts: (paramsObj: {params: IQueryParams}) => Promise<PostWithTags[]>,
     createPost: (data: CreatePost) => Promise<Post>,
-    getPostById: (postId: number) => Promise<Post | null>,
+    getPostById: (postId: number, likedBy?: boolean, comments?: boolean) => Promise<PostWithRelations | null>,
     updatePostById: (postId: number, data: UpdatePost) => Promise<UpdatePost>,
     deletePostById: (postId: number) => Promise<Post>
+    createComment: (data: CreateComment) => Promise<Comment>
+    likePost: (postId: number, userId: number) => Promise<PostLike>
+    findLike: (postId: number, userId: number) => Promise<PostLike | null>
+    unlikePost: (postId: number, userId: number) => Promise<PostLike>
 }

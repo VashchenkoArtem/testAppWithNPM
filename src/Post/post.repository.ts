@@ -46,11 +46,14 @@ export const PostRepository: IRepositoryContract ={
             throw error
         }
     },
-    getPostById: async(postId) => {
+    getPostById: async(postId, likedBy, comments) => {
         try{
             const postById = await client.post.findUnique({
                 where: {
                     id: postId
+                }, include: {
+                    likes: likedBy,
+                    comments: comments
                 }
             })
             return postById
@@ -84,6 +87,58 @@ export const PostRepository: IRepositoryContract ={
                 }
             })
             return post
+        }catch(error){
+            throw error
+        }
+    },
+    createComment: async (data) => {
+        try{
+            const createdComment = await client.comment.create({
+                data: data
+            })
+            return createdComment
+        }catch(error){
+            throw error
+        }
+    },
+    likePost: async (postId, userId) => {
+        try{
+            const like = await client.postLike.create({
+                data: {
+                    postId: postId,
+                    userId: userId
+                }
+            })
+            return like
+        }catch(error){
+            throw error
+        }
+    },
+    findLike: async (postId, userId) => {
+        try{
+            const like = await client.postLike.findUnique({
+                where: {
+                postId_userId: {
+                    postId: postId,
+                    userId: userId
+                }}
+            })
+            return like
+        }catch(error){
+            throw error
+        }
+    },
+    unlikePost: async (postId, userId) => {
+        try{
+            const unlikedPost = await client.postLike.delete({
+            where: {
+                postId_userId: {
+                postId,
+                userId,
+                },
+            },
+            });
+            return unlikedPost
         }catch(error){
             throw error
         }

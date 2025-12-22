@@ -17,7 +17,7 @@ const requestService:IServiceContract = {
             data: newPosts
         }
     },
-    getPostById: async (postId) => {
+    getPostById: async (postId, likedBy, comments) => {
         const id = postId;
         if (!Number(id)){
             return {
@@ -25,7 +25,7 @@ const requestService:IServiceContract = {
                 message: "Id is entering incorrectly!"
             }
         }
-        const postById = await PostRepository.getPostById(postId);
+        const postById = await PostRepository.getPostById(postId, likedBy, comments);
         if (!postById){
             return{
                 status: "Does not exist",
@@ -71,6 +71,18 @@ const requestService:IServiceContract = {
                 "message": error
             }
         }
+    },
+    createComment: async(data)=>{
+        const createdComment = await PostRepository.createComment(data)
+        return createdComment
+    },
+    likePost: async(postId, userId)=>{
+        const postLike = await PostRepository.likePost(postId, userId)
+        return postLike
+    },
+    unlikePost: async(postId, userId)=>{
+        const unlikedPost = await PostRepository.unlikePost(postId, userId)
+        return unlikedPost
     }
 }
 export default requestService
