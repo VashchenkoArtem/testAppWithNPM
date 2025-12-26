@@ -55,9 +55,12 @@ export const PostRepository: IRepositoryContract ={
                     id: postId
                 }, include: {
                     likes: likedBy,
-                    comments: comments
-                }
-            })
+                    comments: comments,
+                    tags: {include:
+                        {tag: true}
+                    },
+                    createdBy: true,
+            }})
             return postById
         }
         catch(error)
