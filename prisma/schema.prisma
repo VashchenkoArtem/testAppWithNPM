@@ -62,5 +62,5 @@ model Comment {
   postId     Int
   authorId   Int
   post       Post    @relation(fields: [postId], references: [id])
-  user       User    @relation(fields: [authorId], references: [id])
+  author       User    @relation(fields: [authorId], references: [id])
 }
