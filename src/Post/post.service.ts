@@ -72,8 +72,8 @@ const requestService:IServiceContract = {
             }
         }
     },
-    createComment: async(data)=>{
-        const createdComment = await PostRepository.createComment(data)
+    createComment: async(content, authorId, postId)=>{
+        const createdComment = await PostRepository.createComment(content, authorId, postId)
         return createdComment
     },
     likePost: async(postId, userId)=>{

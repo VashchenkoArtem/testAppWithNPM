@@ -74,12 +74,14 @@ const requestController: IControllerContract = {
         res.status(200).json(response.data)
     },
     createComment: async(req, res) => {
-        const commentData = req.body
-        if (!commentData){
+        const content = req.body
+        const postId = Number(req.params.postId)
+        const authorId = Number(res.locals.userId)
+        if (!content){
             res.status(422).json("Please, enter data correctly!");
             return;
         }
-        const response = await requestService.createComment(commentData)
+        const response = await requestService.createComment(content, authorId, postId)
         if (!response){
             res.status(500).json("Comment doesn`t create!");
             return;

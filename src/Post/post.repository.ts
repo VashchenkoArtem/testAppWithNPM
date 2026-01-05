@@ -100,10 +100,14 @@ export const PostRepository: IRepositoryContract ={
             throw error
         }
     },
-    createComment: async (data) => {
+    createComment: async (content, userId, postId) => {
         try{
             const createdComment = await client.comment.create({
-                data: data
+                data: {
+                    authorId: userId,
+                    postId: postId,
+                    content: content.content
+                }
             })
             return createdComment
         }catch(error){

@@ -52,7 +52,7 @@ export interface IControllerContract{
         res: Response<Post | string> 
     ) => void,
     createComment: (
-        req: Request<{postId: string}, Comment | string, CreateComment >,
+        req: Request<{postId: string}, Comment | string, {content: string}>,
         res: Response<Comment | string>
     ) => void
     likePost: (
@@ -75,7 +75,7 @@ export interface IServiceContract{
     getPostById: (postId: number, likedBy: boolean, comments: boolean) => Promise<IStatus<PostWithRelations>>,
     updatePostById: (postId: number, data: UpdatePost) => Promise<IStatus<UpdatePost>>,
     deletePostById: (postId: number) => Promise<{status: string, data?: Post}>
-    createComment: (data: CreateComment) => Promise<Comment | string>
+    createComment: (content: {content: string}, authorId: number, postId: number) => Promise<Comment | string>
     likePost: (postId: number, userId: number) => Promise<PostLike | string>
     unlikePost: (postId: number, userId: number) => Promise<PostLike | string>
     checkLike: (postId: number, userId: number) => Promise<boolean | string>
@@ -87,7 +87,7 @@ export interface IRepositoryContract{
     getPostById: (postId: number, likedBy?: boolean, comments?: boolean) => Promise<PostWithRelations | null>,
     updatePostById: (postId: number, data: UpdatePost) => Promise<UpdatePost>,
     deletePostById: (postId: number) => Promise<Post>
-    createComment: (data: CreateComment) => Promise<Comment>
+    createComment: (content: {content: string}, authorId: number, postId: number) => Promise<Comment>
     likePost: (postId: number, userId: number) => Promise<PostLike>
     findLike: (postId: number, userId: number) => Promise<PostLike | null>
     unlikePost: (postId: number, userId: number) => Promise<PostLike>

@@ -57,7 +57,7 @@ model User {
 
 model Comment {
   id         Int     @id @unique @default(autoincrement())
-  body       String
+  content       String
   createdAt  DateTime @default(now())
   postId     Int
   authorId   Int
