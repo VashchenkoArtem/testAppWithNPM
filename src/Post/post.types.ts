@@ -56,12 +56,16 @@ export interface IControllerContract{
         res: Response<Comment | string>
     ) => void
     likePost: (
-        req: Request<{postId: string, userId: string}, PostLike | string, object>,
+        req: Request<{postId: string}, PostLike | string, object>,
         res: Response<PostLike | string>
     ) => void
     unlikePost: (
-        req: Request<{postId: string, userId: string}, PostLike | string, object>,
+        req: Request<{postId: string}, PostLike | string, object>,
         res: Response<PostLike | string>
+    ) => void
+    checkLike: (
+        req: Request<{postId: string}, boolean | string>,
+        res: Response<boolean | string>
     ) => void
 }
 
@@ -74,6 +78,7 @@ export interface IServiceContract{
     createComment: (data: CreateComment) => Promise<Comment | string>
     likePost: (postId: number, userId: number) => Promise<PostLike | string>
     unlikePost: (postId: number, userId: number) => Promise<PostLike | string>
+    checkLike: (postId: number, userId: number) => Promise<boolean | string>
 }
 
 export interface IRepositoryContract{
@@ -86,4 +91,5 @@ export interface IRepositoryContract{
     likePost: (postId: number, userId: number) => Promise<PostLike>
     findLike: (postId: number, userId: number) => Promise<PostLike | null>
     unlikePost: (postId: number, userId: number) => Promise<PostLike>
+    checkLike: (postId: number, userId: number) => Promise<boolean | string>
 }

@@ -83,6 +83,10 @@ const requestService:IServiceContract = {
     unlikePost: async(postId, userId)=>{
         const unlikedPost = await PostRepository.unlikePost(postId, userId)
         return unlikedPost
+    },
+    checkLike: async(postId, userId)=>{
+        const checkLike = await PostRepository.checkLike(postId, userId)
+        return checkLike
     }
 }
 export default requestService

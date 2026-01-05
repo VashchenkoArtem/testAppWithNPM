@@ -5,6 +5,7 @@ import { ENV } from "../config/env";
 
 export function AuthMiddleware(req: Request, res: Response<string, {userId: number}>, next: NextFunction){
     const headers = req.headers.authorization
+    console.log(headers)
     if (!headers){
         res.status(401).json("Authorization is required!");
         return;

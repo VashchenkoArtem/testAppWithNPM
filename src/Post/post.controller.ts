@@ -88,7 +88,7 @@ const requestController: IControllerContract = {
     },
     likePost: async(req, res) => {
         const postId = Number(req.params.postId)
-        const userId = Number(req.params.userId)
+        const userId = Number(res.locals.userId)
         const like = await PostRepository.findLike(postId, userId)
         if (like){
             res.status(400).json("You have already liked this post!")
@@ -99,8 +99,14 @@ const requestController: IControllerContract = {
     },
     unlikePost: async(req, res) => {
         const postId = Number(req.params.postId)
-        const userId = Number(req.params.userId)
+        const userId = Number(res.locals.userId)
         const response = await PostRepository.unlikePost(postId, userId)
+        res.status(200).json(response)
+    },
+    checkLike: async(req, res) => {
+        const postId = Number(req.params.postId)
+        const userId = Number(res.locals.userId)
+        const response = await requestService.checkLike(postId, userId)
         res.status(200).json(response)
     }
 } 

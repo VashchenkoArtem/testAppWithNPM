@@ -151,5 +151,31 @@ export const PostRepository: IRepositoryContract ={
         }catch(error){
             throw error
         }
+    },
+    checkLike: async(postId, userId)=>{
+        try{
+            const post = await client.post.findUnique({
+                where: {id: postId},
+                include: {
+                    likes: true
+                }})
+            const user = await client.user.findUnique({
+                where: {
+                    id: userId
+                }
+            })
+            if (!post){
+                return "post not found"
+            }
+            if (!user){
+                return "user not found"
+            }
+            if (post.likes.some(u => u.userId === user.id)){
+                return true
+            }
+            return false
+        }catch(error){
+            throw error as string
+        }
     }
 }
