@@ -107,6 +107,9 @@ export const PostRepository: IRepositoryContract ={
                     authorId: userId,
                     postId: postId,
                     content: content.content
+                },
+                include:{
+                    author: true
                 }
             })
             return createdComment
