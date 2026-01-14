@@ -24,8 +24,9 @@ const requestController: IControllerContract = {
         res.status(200).json(response.data);
     },
     createPost: async (req, res): Promise<void> => {
-            let data = req.body;
-            const response: IStatus<CreatePost> = await requestService.createPost(data);
+            const data = req.body;
+            const userId = res.locals.userId
+            const response: IStatus<CreatePost> = await requestService.createPost(data, userId);
             if (response.status === "data incorrect"){
                 res.status(422).json("Please, enter data correctly!");
                 return;

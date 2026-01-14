@@ -34,7 +34,16 @@ export type PostWithTags = Prisma.PostGetPayload<{
 export type PostLike = Prisma.PostLikeGetPayload<{}>;
 export type CreatePostLike = Prisma.PostLikeUncheckedCreateInput;
 
-export type CreatePost = Prisma.PostUncheckedCreateInput;
+export type CreatePost = {
+    id?: number | undefined;
+    title: string;
+    description: string;
+    image: string;
+    userId: number;
+    likes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutPostInput | undefined;
+    tags?: number[];
+    comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPostInput;
+}
 export type UpdatePost = Prisma.PostUpdateInput;
 export type UpdatePostUnchecked = Prisma.PostUncheckedUpdateInput
 
@@ -42,8 +51,8 @@ export type UpdatePostUnchecked = Prisma.PostUncheckedUpdateInput
 export interface IControllerContract{
     getPosts: (req: Request<object, PostWithTags[] | string, object, IQueryParams>,
         res: Response<PostWithTags[]|string>) => void,
-    createPost: (req: Request<object, CreatePost|string, CreatePost>,
-        res: Response<CreatePost|string, {userId: number}>) => void,
+    createPost: (req: Request<object, Post|string, CreatePost>,
+        res: Response<Post|string>) => void
     getPostById: (req: Request<{id : string}, PostWithRelations | string, object>,
         res: Response<PostWithRelations | string>) => void,
     updatePostById: (req: Request<{id : string}, UpdatePost | string, UpdatePost>,
@@ -71,7 +80,7 @@ export interface IControllerContract{
 
 export interface IServiceContract{
     getPosts: (params: IQueryParams) => Promise<IStatus<PostWithTags[]>>,
-    createPost: (data: CreatePost) => Promise<IStatus<CreatePost>>,
+    createPost: (data: CreatePost, userId: number) => Promise<IStatus<Post>>,
     getPostById: (postId: number, likedBy: boolean, comments: boolean) => Promise<IStatus<PostWithRelations>>,
     updatePostById: (postId: number, data: UpdatePost) => Promise<IStatus<UpdatePost>>,
     deletePostById: (postId: number) => Promise<{status: string, data?: Post}>
@@ -83,7 +92,7 @@ export interface IServiceContract{
 
 export interface IRepositoryContract{
     getPosts: (paramsObj: {params: IQueryParams}) => Promise<PostWithTags[]>,
-    createPost: (data: CreatePost) => Promise<Post>,
+    createPost: (data: CreatePost, userId: number) => Promise<Post>,
     getPostById: (postId: number, likedBy?: boolean, comments?: boolean) => Promise<PostWithRelations | null>,
     updatePostById: (postId: number, data: UpdatePost) => Promise<UpdatePost>,
     deletePostById: (postId: number) => Promise<Post>

@@ -22,27 +22,32 @@ export const PostRepository: IRepositoryContract ={
             throw error
         }
     },
-    createPost: async(post) => {
+    createPost: async(post, userId) => {
         try{
-            const tags = post.tags as []
             const newPost = await client.post.create({
-                data: {
-                    title: post.title, 
-                    description: post.description,
-                    image: post.image,
-                    userId: post.userId,
-                    likes: post.likes,
-                    tags: post.tags && tags.length > 0
-                    ? {
-                        createMany: {
-                            data: tags.map(tagId => ({ tagId }))
-                        }
-                        }
-                    : undefined
+            data: {
+                title: post.title,
+                description: post.description,
+                image: post.image,
+                userId: userId,
 
+                tags: {
+                create: post.tags && post.tags.map((tagId: number) => ({
+                    tag: {
+                        connect: { id: tagId }
                     }
+                }))
                 }
-            )
+            },
+            include: {
+                tags: {
+                include: {
+                    tag: true
+                }
+                }
+            }
+            })
+
             return newPost
         }catch(error){
             throw error

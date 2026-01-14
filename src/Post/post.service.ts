@@ -10,8 +10,8 @@ const requestService:IServiceContract = {
             data: products
         }
     },
-    createPost: async (data) => {
-        const newPosts = await PostRepository.createPost(data)
+    createPost: async (data, userId) => {
+        const newPosts = await PostRepository.createPost(data, userId)
         return {
             status: "success",
             data: newPosts
