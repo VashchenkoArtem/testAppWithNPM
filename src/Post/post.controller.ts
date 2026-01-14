@@ -1,6 +1,6 @@
 import { PostRepository } from "./post.repository";
 import requestService from "./post.service"
-import { CreatePost, IQueryParams, IStatus, Post, UpdatePost } from "./post.types"
+import { IQueryParams, IStatus, Post, UpdatePost } from "./post.types"
 import { IControllerContract } from "./post.types"
 
 
@@ -26,12 +26,8 @@ const requestController: IControllerContract = {
     createPost: async (req, res): Promise<void> => {
             const data = req.body;
             const userId = res.locals.userId
-            const response: IStatus<CreatePost> = await requestService.createPost(data, userId);
-            if (response.status === "data incorrect"){
-                res.status(422).json("Please, enter data correctly!");
-                return;
-            }
-            res.status(201).json("Post created succesfuly!");
+            const response = await requestService.createPost(data, userId);
+            res.status(201).json(response);
     },
     getPostById: async (req, res): Promise<void> => {
         const postId = Number(req.params.id);

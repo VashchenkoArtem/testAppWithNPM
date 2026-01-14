@@ -12,10 +12,7 @@ const requestService:IServiceContract = {
     },
     createPost: async (data, userId) => {
         const newPosts = await PostRepository.createPost(data, userId)
-        return {
-            status: "success",
-            data: newPosts
-        }
+        return newPosts
     },
     getPostById: async (postId, likedBy, comments) => {
         const id = postId;

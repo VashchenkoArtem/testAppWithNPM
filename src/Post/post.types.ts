@@ -80,7 +80,7 @@ export interface IControllerContract{
 
 export interface IServiceContract{
     getPosts: (params: IQueryParams) => Promise<IStatus<PostWithTags[]>>,
-    createPost: (data: CreatePost, userId: number) => Promise<IStatus<Post>>,
+    createPost: (data: CreatePost, userId: number) => Promise<Post>,
     getPostById: (postId: number, likedBy: boolean, comments: boolean) => Promise<IStatus<PostWithRelations>>,
     updatePostById: (postId: number, data: UpdatePost) => Promise<IStatus<UpdatePost>>,
     deletePostById: (postId: number) => Promise<{status: string, data?: Post}>
